@@ -1,10 +1,10 @@
 import axios from "axios";
-import { register, login } from "../Constants/constants";
+import { api } from "../Constants/constants";
 
 // Function to handle user registration
 export const registerUser = async (userData: any) => {
 	try {
-		const response = await axios.post(register, userData);
+		const response = await axios.post(`${api}/auth/register`, userData);
 		return response.data;
 	} catch (error) {
 		console.error("Error registering user:", error);
@@ -15,7 +15,7 @@ export const registerUser = async (userData: any) => {
 // Function to handle user login
 export const loginUser = async (credentials: any) => {
 	try {
-		const response = await axios.post(login, credentials);
+		const response = await axios.post(`${api}/auth/login`, credentials);
 		return response.data;
 	} catch (error) {
 		console.error("Error logging in user:", error);

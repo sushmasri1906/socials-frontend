@@ -1,5 +1,5 @@
 import axios from "axios";
-import { api, getUserPosts } from "../Constants/constants";
+import { api } from "../Constants/constants";
 import { authTokenState } from "@/State/atoms";
 import { useRecoilValue } from "recoil";
 
@@ -20,6 +20,30 @@ export const usePost = () => {
 		try {
 			const response = await fetch(`${api}/posts/profile`, {
 				method: "POST",
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+			const data = await response.json();
+			return data.posts;
+		} catch (error: unknown) {
+			// Handle and type the error
+			if (error instanceof Error) {
+				throw new Error(`Failed to fetch posts: ${error.message}`);
+			} else {
+				throw new Error("An unknown error occurred");
+			}
+		}
+	};
+
+	const fetchPostsByOthersUserId = async (id: string) => {
+		if (!token) {
+			throw new Error("No token provided");
+		}
+
+		try {
+			const response = await fetch(`${api}/posts/user/${id}`, {
+				method: "GET",
 				headers: {
 					Authorization: `Bearer ${token}`,
 				},
@@ -89,5 +113,10 @@ export const usePost = () => {
 			}
 		}
 	};
-	return { createPost, fetchAllPosts, fetchPostsByUserId };
+	return {
+		createPost,
+		fetchAllPosts,
+		fetchPostsByUserId,
+		fetchPostsByOthersUserId,
+	};
 };

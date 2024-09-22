@@ -1,5 +1,5 @@
 import axios from "axios";
-import { followUser, getProfile, unfollowUser } from "../Constants/constants";
+import { api } from "../Constants/constants";
 
 // Define types for user profile and errors
 type UserProfile = {
@@ -7,7 +7,7 @@ type UserProfile = {
 	username: string;
 	email: string;
 	profilePicture: string;
-	bio?: string; // Make bio optional in case it's not always provided
+	bio?: string;
 	followers: string[];
 	following: string[];
 	posts: string[];
@@ -26,7 +26,7 @@ export const fetchProfile = async (token: string): Promise<UserProfile> => {
 		throw new Error("Invalid token");
 	}
 	try {
-		const response = await axios.get(getProfile, {
+		const response = await axios.get(`${api}/user`, {
 			headers: {
 				Authorization: `Bearer ${token}`,
 			},
@@ -49,17 +49,17 @@ export const fetchProfile = async (token: string): Promise<UserProfile> => {
 
 // Follow a user
 export const followUserService = async (
-	id: string,
+	userId: string,
 	token: string
 ): Promise<void> => {
-	if (!token || !id) {
+	if (!token || !userId) {
 		throw new Error("Invalid token or userId");
 	}
 	try {
 		await axios.post(
-			followUser(id),
+			`${api}/user/follow/${userId}`,
 			{
-				targetUserId: id,
+				targetUserId: userId,
 			},
 			{
 				headers: {
@@ -92,7 +92,7 @@ export const unfollowUserService = async (
 	}
 	try {
 		await axios.post(
-			unfollowUser(userId), // Pass the userId in the URL if required by API
+			`${api}/user/unfollow/${userId}`, // Pass the userId in the URL if required by API
 			{
 				targetUserId: userId, // Pass the target userId in the request body if required
 			},
@@ -146,7 +146,7 @@ export const addLike = async (
 ): Promise<LikeResponse> => {
 	console.log("inside addLike ", postId);
 	const response = await axios.post(
-		"/ig/posts/like",
+		`${api}/posts/like`,
 		{ postId },
 		{
 			headers: {
@@ -158,11 +158,12 @@ export const addLike = async (
 };
 
 // Delete a like
+
 export const deleteLike = async (
-	likeId: string,
+	postId: string,
 	token: string
 ): Promise<LikeResponse> => {
-	const response = await axios.delete(`/ig/posts/like/${likeId}`, {
+	const response = await axios.delete(`${api}/posts/like/${postId}`, {
 		headers: {
 			Authorization: `Bearer ${token}`,
 		},
@@ -177,7 +178,7 @@ export const addComment = async (
 	token: string
 ): Promise<AddCommentResponse> => {
 	const response = await axios.post(
-		"/ig/posts/comments",
+		`${api}/posts/comments`,
 		{ postId, ...commentData },
 		{
 			headers: {
@@ -193,7 +194,7 @@ export const fetchComments = async (
 	postId: string,
 	token: string
 ): Promise<FetchCommentsResponse> => {
-	const response = await axios.get(`/ig/posts/${postId}/comments`, {
+	const response = await axios.get(`/${api}ig/posts/${postId}/comments`, {
 		headers: {
 			Authorization: `Bearer ${token}`,
 		},
@@ -208,7 +209,7 @@ export const updateComment = async (
 	token: string
 ): Promise<LikeResponse> => {
 	const response = await axios.put(
-		`/ig/posts/comments/${commentId}`,
+		`${api}/posts/comments/${commentId}`,
 		commentData,
 		{
 			headers: {
@@ -224,7 +225,7 @@ export const deleteComment = async (
 	commentId: string,
 	token: string
 ): Promise<LikeResponse> => {
-	const response = await axios.delete(`/ig/posts/comments/${commentId}`, {
+	const response = await axios.delete(`${api}/posts/comments/${commentId}`, {
 		headers: {
 			Authorization: `Bearer ${token}`,
 		},

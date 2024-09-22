@@ -151,7 +151,7 @@ const Profile: React.FC = () => {
 					{!editMode && (
 						<div className="flex justify-around w-full mt-4">
 							<div className="text-center">
-								<span className="font-bold">{profile?.posts.length || 0}</span>
+								<span className="font-bold">{posts ? posts.length : 0}</span>
 								<p className="text-gray-500">Posts</p>
 							</div>
 							<div className="text-center">

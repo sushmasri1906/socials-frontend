@@ -3,7 +3,7 @@ import { useState, ChangeEvent, FormEvent, useEffect } from "react";
 import { useRecoilState } from "recoil";
 import { searchResultsState, authTokenState } from "../../State/atoms";
 import axios from "axios";
-import { userSearch } from "../../Constants/constants";
+import { api } from "../../Constants/constants";
 import { useRouter } from "next/navigation"; // Correct import for Next.js
 
 const SearchUser = () => {
@@ -20,7 +20,7 @@ const SearchUser = () => {
 	const handleSubmit = async () => {
 		if (query.trim()) {
 			try {
-				const response = await axios.get(userSearch, {
+				const response = await axios.get(`${api}/user/users`, {
 					params: { username: query },
 					headers: {
 						Authorization: `Bearer ${authToken}`,

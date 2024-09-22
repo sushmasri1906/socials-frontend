@@ -31,7 +31,7 @@ const Posts = () => {
 		<div className="max-w-4xl mx-auto mt-10 p-6">
 			<h2 className="text-2xl font-bold mb-4">User Posts</h2>
 			<div className="space-y-6">
-				{posts.length === 0 ? (
+				{posts && posts.length === 0 ? (
 					<p>No posts available</p>
 				) : (
 					posts.map((post: any) => (
