@@ -1,17 +1,18 @@
 "use client";
 import { useState, ChangeEvent, FormEvent, useEffect } from "react";
 import { useRecoilState } from "recoil";
-import { searchResultsState, authTokenState } from "../../State/atoms";
+import { authTokenState } from "../../State/atoms";
 import axios from "axios";
 import { api } from "../../Constants/constants";
-import { useRouter } from "next/navigation"; // Correct import for Next.js
+import { useRouter } from "next/navigation";
+import { User } from "@/types/types";
 
 const SearchUser = () => {
 	const [query, setQuery] = useState<string>("");
-	const [searchResults, setSearchResults] = useRecoilState(searchResultsState);
+	const [searchResults, setSearchResults] = useState<User[] | []>([]);
 	const [authToken] = useRecoilState(authTokenState);
 	const [error, setError] = useState<string | null>(null);
-	const router = useRouter(); // Use useRouter from next/navigation
+	const router = useRouter();
 
 	const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
 		setQuery(e.target.value);
@@ -29,6 +30,7 @@ const SearchUser = () => {
 				setSearchResults(response.data);
 				setError(null);
 			} catch (error: any) {
+				console.error("Error fetching users:", error);
 				setError("Error fetching users: " + error.message);
 				setSearchResults([]);
 			}
@@ -46,8 +48,7 @@ const SearchUser = () => {
 	}, [query]);
 
 	return (
-		<div className="max-w-md mx-auto mt-10 p-6 border rounded-md shadow-md">
-			<h2 className="text-2xl font-bold mb-4">Search Users</h2>
+		<>
 			<div>
 				<input
 					type="text"
@@ -70,11 +71,10 @@ const SearchUser = () => {
 							<li
 								key={user._id}
 								className="mb-2 cursor-pointer"
-								onClick={() => handleUserClick(user._id)} // Trigger profile page navigation on click
-							>
+								onClick={() => handleUserClick(user._id)}>
 								<div className="flex items-center space-x-4">
 									<img
-										src={user.profilePicture || "/default-profile.jpg"} // User's profile picture
+										src={user.profilePicture || "/default-profile.jpg"}
 										alt="Profile"
 										className="w-12 h-12 rounded-full"
 									/>
@@ -90,7 +90,7 @@ const SearchUser = () => {
 					<p>No users found.</p>
 				)}
 			</div>
-		</div>
+		</>
 	);
 };
 

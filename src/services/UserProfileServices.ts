@@ -1,27 +1,15 @@
 import axios from "axios";
 import { api } from "../Constants/constants";
+import { User } from "@/types/types";
 
 // Define types for user profile and errors
-type UserProfile = {
-	_id: string;
-	username: string;
-	email: string;
-	profilePicture: string;
-	bio?: string;
-	followers: string[];
-	following: string[];
-	posts: string[];
-	postsCount?: number;
-	followersCount?: number;
-	followingCount?: number;
-};
 
 type FetchProfileError = {
 	message: string;
 };
 
 // Fetch user profile of the authenticated user
-export const fetchProfile = async (token: string): Promise<UserProfile> => {
+export const fetchProfile = async (token: string): Promise<User> => {
 	if (!token) {
 		throw new Error("Invalid token");
 	}
@@ -171,15 +159,14 @@ export const deleteLike = async (
 	return response.data;
 };
 
-// Add a comment
 export const addComment = async (
 	postId: string,
-	commentData: { text: string },
+	comment: string,
 	token: string
-): Promise<AddCommentResponse> => {
+): Promise<{ comment: Comment }> => {
 	const response = await axios.post(
 		`${api}/posts/comments`,
-		{ postId, ...commentData },
+		{ postId, comment },
 		{
 			headers: {
 				Authorization: `Bearer ${token}`,
@@ -189,12 +176,12 @@ export const addComment = async (
 	return response.data;
 };
 
-// Get comments for a post
+//get comments for post
 export const fetchComments = async (
 	postId: string,
 	token: string
 ): Promise<FetchCommentsResponse> => {
-	const response = await axios.get(`/${api}ig/posts/${postId}/comments`, {
+	const response = await axios.get(`${api}/posts/${postId}/comments`, {
 		headers: {
 			Authorization: `Bearer ${token}`,
 		},
@@ -202,15 +189,16 @@ export const fetchComments = async (
 	return response.data;
 };
 
-// Update a comment
+//update comment
 export const updateComment = async (
 	commentId: string,
 	commentData: { text: string },
+	postId: string,
 	token: string
 ): Promise<LikeResponse> => {
 	const response = await axios.put(
 		`${api}/posts/comments/${commentId}`,
-		commentData,
+		{ postId, text: commentData.text },
 		{
 			headers: {
 				Authorization: `Bearer ${token}`,
@@ -223,11 +211,15 @@ export const updateComment = async (
 // Delete a comment
 export const deleteComment = async (
 	commentId: string,
+	postId: string,
 	token: string
 ): Promise<LikeResponse> => {
 	const response = await axios.delete(`${api}/posts/comments/${commentId}`, {
 		headers: {
 			Authorization: `Bearer ${token}`,
+		},
+		data: {
+			postId,
 		},
 	});
 	return response.data;

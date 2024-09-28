@@ -29,7 +29,7 @@ export const fetchOthersProfile = async (userId: string, token: string) => {
 		headers: { Authorization: `Bearer ${token}` },
 	};
 	try {
-		const response = await axios.get(`${api}/user/${userId}`, config);
+		const response = await axios.get(`${api}/user/others/${userId}`, config);
 		return response.data;
 	} catch (error) {
 		if (axios.isAxiosError(error)) {

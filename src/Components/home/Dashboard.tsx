@@ -1,5 +1,5 @@
 import React from "react";
-import Posts from "../User/Posts";
+import Posts from "./Posts";
 
 const Dashboard = () => {
 	return (

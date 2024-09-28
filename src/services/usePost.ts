@@ -12,7 +12,7 @@ export const usePost = () => {
 	const token = useRecoilValue(authTokenState);
 
 	// Fetch all posts for a user by user ID
-	const fetchPostsByUserId = async () => {
+	const fetchPostsByUserId = async (_id: any) => {
 		if (!token) {
 			throw new Error("No token provided");
 		}

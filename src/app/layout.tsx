@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import Providers from "./Providers";
-import NavBar from "@/Components/NavBar";
+import HNavBar from "@/Components/NavBar/HNavBar";
+import VNavBar from "@/Components/NavBar/VNavBar";
 
 const geistSans = localFont({
 	src: "./fonts/GeistVF.woff",
@@ -31,8 +32,27 @@ export default function RootLayout({
 				className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
 				<div>
 					<Providers>
-						<NavBar />
-						{children}
+						<div className=" flex h-screen w-screen">
+							<div className="w-1/6 min-w-[180px] hidden sm:block">
+								<VNavBar />
+							</div>
+							<div className="w-screen sm:w-5/6">
+								<div className="flex items-center h-16 px-2 w-full sm:hidden">
+									<h2 className="text-center text-4xl font-extrabold text-gray-800 mb-6">
+										<span className="bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 text-transparent bg-clip-text">
+											HexVibe
+										</span>
+									</h2>
+								</div>
+								<div className="w-full h-[calc(100%-128px)] sm:h-screen overflow-y-scroll">
+									{children}
+								</div>
+
+								<div className="w-full sm:hidden">
+									<HNavBar />
+								</div>
+							</div>
+						</div>
 					</Providers>
 				</div>
 			</body>
