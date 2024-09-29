@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
 	followUserService,
 	unfollowUserService,
@@ -9,10 +9,11 @@ import { authTokenState, userState } from "@/State/atoms";
 import { useParams, useRouter } from "next/navigation";
 import { fetchOthersProfile } from "@/services/profileServices";
 import Image from "next/image";
+// import UserPosts from "./UserPosts";
+import { User } from "@/types/types";
 import UserPosts from "./UserPosts";
-import { User, Post } from "@/types/types";
 
-const UserProfile: React.FC = () => {
+const UserProfile = () => {
 	const [profile, setProfile] = useState<User | null>(null);
 	const token = useRecoilValue(authTokenState);
 	const { id } = useParams();
@@ -73,9 +74,9 @@ const UserProfile: React.FC = () => {
 	};
 
 	// Navigate to another user's profile when follower/following name is clicked
-	const handleNavigateToUserProfile = (userId: string) => {
-		router.push(`/user/${userId}`);
-	};
+	// const handleNavigateToUserProfile = (userId: string) => {
+	// 	router.push(`/user/${userId}`);
+	// };
 
 	if (loading) {
 		return <p>Loading profile...</p>;
@@ -95,9 +96,11 @@ const UserProfile: React.FC = () => {
 			<div className="flex items-center">
 				<div className="w-24 h-24 rounded-full overflow-hidden border-2 border-gray-200">
 					<Image
-						src={profile.profilePicture || "/default-avatar.png"}
+						src={profile.profilePicture}
 						alt="Profile Picture"
 						className="w-full h-full object-cover"
+						width={112}
+						height={112}
 					/>
 				</div>
 				<div className="flex-1 ml-4">
@@ -144,7 +147,7 @@ const UserProfile: React.FC = () => {
 			</div>
 
 			{/* Posts Section */}
-			<UserPosts currentUser={currentUser} token={token!} />
+			<UserPosts token={token!} />
 		</div>
 	);
 };

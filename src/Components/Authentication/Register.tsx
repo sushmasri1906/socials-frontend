@@ -3,13 +3,6 @@ import { useState } from "react";
 import { useAuth } from "@/services/useAuth";
 import Link from "next/link";
 
-interface UserType {
-	username: string;
-	email: string;
-	password: string;
-	confirmPassword: string;
-}
-
 const Register = () => {
 	const { register, success, error } = useAuth();
 	const [username, setUsername] = useState("");

@@ -5,7 +5,7 @@ import { useRecoilValue } from "recoil";
 import { usePost } from "../../services/usePost";
 import { getToken } from "../../Utils/tokenUtils";
 import { Post } from "@/types/types";
-import { authTokenState, userState } from "@/State/atoms";
+import { authTokenState } from "@/State/atoms";
 import EachPost from "./EachPost";
 
 interface PostWithPopulatedUser extends Omit<Post, "user"> {
@@ -47,7 +47,11 @@ const Posts = () => {
 				{posts.length === 0 ? (
 					<p>No posts available</p>
 				) : (
-					posts.map((post) => <EachPost post={post} />)
+					posts.map((post) => (
+						<div key={post._id}>
+							<EachPost post={post} />
+						</div>
+					))
 				)}
 			</div>
 		</div>

@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { usePost } from "@/services/usePost";
-import { useHandleImage } from "@/services/useHandleImage";
+// import { usePost } from "@/services/usePost";
+// import { useHandleImage } from "@/services/useHandleImage";
+import { useRecoilValue } from "recoil";
+import { authTokenState } from "@/State/atoms";
 
 const Upload = () => {
 	const [file, setFile] = useState<File | null>(null);
@@ -10,8 +12,9 @@ const Upload = () => {
 	const [location, setLocation] = useState("");
 	const [uploading, setUploading] = useState(false);
 	const [taggedUsers, setTaggedUsers] = useState([]);
-	const { handleImageUpload } = useHandleImage();
-	const { createPost } = usePost();
+	// const { handleImageUpload } = useHandleImage();
+	// const { createPost } = usePost();
+	const token = useRecoilValue(authTokenState);
 	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		if (e.target.files) {
 			setFile(e.target.files[0]);
@@ -20,19 +23,33 @@ const Upload = () => {
 
 	const handleUpload = async () => {
 		setUploading(true);
-		if (!file) return;
-		const url = await handleImageUpload(file);
+		setTaggedUsers([]);
 
-		const upload = async () => {
-			if (!url) return;
-			const response = await createPost({
-				imageUrl: url,
-				caption,
-				location,
-				taggedUsers,
+		if (!file) return;
+
+		// Create a FormData object
+		const formData = new FormData();
+		formData.append("file", file); // Add the file to the form data
+		formData.append("caption", caption); // Add caption
+		formData.append("location", location); // Add location
+		formData.append("taggedUsers", JSON.stringify(taggedUsers)); // Add tagged users as a JSON string
+
+		try {
+			const response = await fetch("http://localhost:5000/ig/posts/create", {
+				method: "POST",
+				headers: {
+					Authorization: `Bearer ${token}`, // Replace with your auth token
+				},
+				body: formData, // Send the FormData
 			});
-		};
-		upload();
+
+			const result = await response.json();
+
+			// Handle the response
+			console.log(result);
+		} catch (error) {
+			console.error("Error uploading post:", error);
+		}
 
 		setUploading(false);
 	};

@@ -2,6 +2,15 @@
 
 module.exports = {
 	images: {
-		domains: ["firebasestorage.googleapis.com"],
+		remotePatterns: [
+			{
+				protocol: "https",
+				hostname: "firebasestorage.googleapis.com",
+			},
+			{
+				protocol: "https",
+				hostname: "res.cloudinary.com",
+			},
+		],
 	},
 };

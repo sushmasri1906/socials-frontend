@@ -1,11 +1,17 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { fetchProfile, updateProfile } from "@/services/profileServices";
+import {
+	deleteProfile,
+	fetchProfile,
+	// updateProfile,
+} from "@/services/profileServices";
 import { useRecoilValue } from "recoil";
 import { authTokenState, userState } from "@/State/atoms";
 import { User } from "@/types/types";
 import Image from "next/image";
-import { useProfile } from "@/services/useProfile";
+// import { useProfile } from "@/services/useProfile";
+import { api } from "@/Constants/constants";
+import { useRouter } from "next/navigation";
 
 const EditProfile: React.FC = () => {
 	const [profile, setProfile] = useState<User>({
@@ -26,7 +32,19 @@ const EditProfile: React.FC = () => {
 	const [error, setError] = useState<string | null>(null);
 	const [profileImg, setProfileImg] = useState<File | null>(null);
 	const [imgPreview, setImgPreview] = useState<string | null>(null); // State for image preview URL
-	const { updateProfileImg } = useProfile();
+	const router = useRouter();
+	// const { updateProfileImg } = useProfile();
+
+	const handleDelete = async () => {
+		if (profile && token) {
+			try {
+				await deleteProfile(profile._id, token);
+				router.push("/login");
+			} catch (error) {
+				console.error("Error deleting profile:", error);
+			}
+		}
+	};
 
 	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		if (e.target.files && e.target.files[0]) {
@@ -61,28 +79,51 @@ const EditProfile: React.FC = () => {
 		loadProfile();
 	}, [token, user._id]);
 
-	const handleUpdate = async () => {
-		if (profile && token) {
-			try {
-				const updatedData = { username, bio };
-				const updatedProfile = await updateProfile(
-					profile._id,
-					updatedData,
-					token
-				);
-				setProfile(updatedProfile);
-			} catch (error) {
-				console.error("Error updating profile:", error);
-			}
-		}
-	};
+	// const handleUpdate = async () => {
+	// 	if (profile && token) {
+	// 		try {
+	// 			const updatedData = { username, bio };
+	// 			const updatedProfile = await updateProfile(
+	// 				profile._id,
+	// 				updatedData,
+	// 				token
+	// 			);
+	// 			setProfile(updatedProfile);
+	// 		} catch (error) {
+	// 			console.error("Error updating profile:", error);
+	// 		}
+	// 	}
+	// };
 
 	const handleProfileImage = async () => {
-		const url = await updateProfileImg(profileImg!);
-		setProfile((prev) => {
-			return { ...prev, profilePicture: url };
-		});
-		loadProfile();
+		if (!profileImg) return;
+
+		// Create a FormData object
+		const formData = new FormData();
+		formData.append("file", profileImg); // Add the file to the form data
+
+		try {
+			const response = await fetch(`${api}/user/profilepicture`, {
+				method: "PUT",
+				headers: {
+					Authorization: `Bearer ${token}`, // Replace with your auth token
+				},
+				body: formData, // Send the FormData
+			});
+
+			const result = await response.json();
+			if (response.ok) {
+				// Handle the response
+				console.log(result);
+				loadProfile();
+				setProfileImg(result.url);
+				setImgPreview(null);
+			} else {
+				setError("Error updating profile picture");
+			}
+		} catch (error) {
+			console.error("Error uploading post:", error);
+		}
 	};
 
 	if (!profile && !error) {
@@ -95,44 +136,58 @@ const EditProfile: React.FC = () => {
 
 	return (
 		<div className="flex flex-col items-center mt-10 bg-gray-50">
+			{error && <p className="text-red-500">{error}....!</p>}
+			<div>{username}</div>
 			<div className="w-28 h-28 rounded-full overflow-hidden border-4">
-				<Image
-					src={profile.profilePicture || "/default-avatar.png"}
-					alt="Profile Picture"
-					className="w-full h-full object-cover"
-				/>
+				{imgPreview ? (
+					<Image
+						src={imgPreview}
+						alt="Profile Picture"
+						className="w-full h-full object-cover"
+						width={112}
+						height={112}
+					/>
+				) : (
+					<Image
+						src={profile.profilePicture}
+						alt="Profile Picture"
+						className="w-full h-full object-cover"
+						width={112}
+						height={112}
+					/>
+				)}
 			</div>
+			{imgPreview && (
+				<button
+					className="px-2 my-2 border rounded bg-blue-400"
+					onClick={handleProfileImage}>
+					Upload
+				</button>
+			)}
 			<div className="border">
 				<input
 					type="file"
 					onChange={handleFileChange}
 					className="w-full p-2 border border-gray-300 rounded-md"
 				/>
-
-				{/* Display the uploaded image preview */}
-				{imgPreview && (
-					<div>
-						<Image
-							src={imgPreview}
-							alt="Uploaded preview"
-							width={300}
-							height={400}
-							className="rounded-full w-28 h-28"
-						/>
-						<button onClick={handleProfileImage}>Upload</button>
-					</div>
+			</div>
+			<div className="flex flex-col items-center gap-y-2">
+				<h2 className="text-2xl font-bold">Bio</h2>
+				{user.bio ? <p>{user.bio}</p> : <p>No bio!!!</p>}
+				<textarea value={bio} onChange={(e) => setBio(e.target.value)} />
+				{user.bio != bio && (
+					<button className="px-2 my-2 border rounded bg-blue-400">
+						update bio
+					</button>
 				)}
 			</div>
-			{/* <div className="flex items-center justify-between w-full mt-4">
-				<h2 className="text-2xl font-bold text-center text-gray-800">
-					{profile.username}
-				</h2>
+			<div>
 				<button
-					className="text-sm font-semibold text-blue-500 hover:text-blue-700"
-					onClick={() => setEditMode(!editMode)}>
-					{editMode ? "Cancel" : "Edit Profile"}
+					className="bg-red-600 text-white px-4 py-2 rounded-lg mt-6 transition hover:bg-red-700"
+					onClick={handleDelete}>
+					Delete Profile
 				</button>
-			</div> */}
+			</div>
 		</div>
 	);
 };

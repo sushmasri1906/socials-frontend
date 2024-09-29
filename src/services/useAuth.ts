@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { authTokenState, userState } from "@/State/atoms"; // Assuming you are using Recoil for state management
 import axios from "axios";
-import { User } from "@/types/types";
+// import { User } from "@/types/types";
 import { api } from "@/Constants/constants";
 import { useRouter } from "next/navigation";
 

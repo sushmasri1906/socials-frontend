@@ -1,11 +1,12 @@
 "use client";
-import { useState, ChangeEvent, FormEvent, useEffect } from "react";
+import { useState, ChangeEvent, useEffect } from "react";
 import { useRecoilState } from "recoil";
 import { authTokenState } from "../../State/atoms";
 import axios from "axios";
 import { api } from "../../Constants/constants";
 import { useRouter } from "next/navigation";
 import { User } from "@/types/types";
+import Image from "next/image";
 
 const SearchUser = () => {
 	const [query, setQuery] = useState<string>("");
@@ -29,9 +30,11 @@ const SearchUser = () => {
 				});
 				setSearchResults(response.data);
 				setError(null);
-			} catch (error: any) {
+			} catch (error) {
+				if (error instanceof Error)
+					setError("Error fetching users: " + error.message);
+				else setError("Unknown Error occured while fetching user");
 				console.error("Error fetching users:", error);
-				setError("Error fetching users: " + error.message);
 				setSearchResults([]);
 			}
 		} else {
@@ -67,16 +70,18 @@ const SearchUser = () => {
 			<div className="mt-6">
 				{searchResults.length > 0 ? (
 					<ul>
-						{searchResults.map((user: any) => (
+						{searchResults.map((user: User) => (
 							<li
 								key={user._id}
 								className="mb-2 cursor-pointer"
 								onClick={() => handleUserClick(user._id)}>
 								<div className="flex items-center space-x-4">
-									<img
-										src={user.profilePicture || "/default-profile.jpg"}
+									<Image
+										src={user.profilePicture}
 										alt="Profile"
 										className="w-12 h-12 rounded-full"
+										width={48}
+										height={48}
 									/>
 									<div>
 										<p className="font-medium">{user.username}</p>

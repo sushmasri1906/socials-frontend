@@ -5,9 +5,9 @@ import { useRecoilValue } from "recoil";
 import { useHandleImage } from "./useHandleImage";
 
 // Define a type for the error
-type FetchPostsError = {
-	message: string;
-};
+// type FetchPostsError = {
+// 	message: string;
+// };
 
 export const useProfile = () => {
 	const { handleImageUpload } = useHandleImage();

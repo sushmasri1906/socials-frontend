@@ -89,10 +89,10 @@ const Login = () => {
 
 			<div className="flex justify-center items-center mt-6 border-t border-gray-300 pt-4">
 				<p className="text-sm">
-					Don't have an account?{" "}
+					<span>{"Don't have an account?"}</span>
 					<Link
 						href="/register"
-						className="text-blue-500 font-semibold hover:underline">
+						className="text-blue-500 font-semibold hover:underline ml-1">
 						register
 					</Link>
 				</p>

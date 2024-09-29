@@ -1,12 +1,12 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { User } from "@/types/types";
 import { authTokenState } from "@/State/atoms";
 import { useRecoilValue } from "recoil";
 import { fetchFollowers } from "@/services/followService";
 
-const Followers: React.FC = () => {
+const Followers = () => {
 	const { id } = useParams<{ id: string }>();
 	const [followers, setFollowers] = useState<User[]>([]);
 	const [loading, setLoading] = useState<boolean>(true);

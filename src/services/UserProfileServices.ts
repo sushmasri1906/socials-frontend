@@ -1,12 +1,13 @@
 import axios from "axios";
 import { api } from "../Constants/constants";
 import { User } from "@/types/types";
+import { Comment } from "@/types/types";
 
 // Define types for user profile and errors
 
-type FetchProfileError = {
-	message: string;
-};
+// type FetchProfileError = {
+// 	message: string;
+// };
 
 // Fetch user profile of the authenticated user
 export const fetchProfile = async (token: string): Promise<User> => {
@@ -111,16 +112,10 @@ interface LikeResponse {
 	message?: string;
 }
 
-interface Comment {
-	_id: string;
-	user: string;
-	text: string;
-}
-
-interface AddCommentResponse {
-	success: boolean;
-	comment: Comment;
-}
+// interface AddCommentResponse {
+// 	success: boolean;
+// 	comment: Comment;
+// }
 
 interface FetchCommentsResponse {
 	success: boolean;
@@ -163,7 +158,10 @@ export const addComment = async (
 	postId: string,
 	comment: string,
 	token: string
-): Promise<{ comment: Comment }> => {
+): Promise<{
+	username: string;
+	comment: Comment;
+}> => {
 	const response = await axios.post(
 		`${api}/posts/comments`,
 		{ postId, comment },

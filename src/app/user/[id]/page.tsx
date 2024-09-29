@@ -1,5 +1,4 @@
 import UserProfile from "@/Components/User/UserProfile";
-import React from "react";
 
 const page = () => {
 	return (

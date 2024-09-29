@@ -5,6 +5,7 @@ import { fetchFollowing } from "@/services/followService";
 import { User } from "@/types/types";
 import { authTokenState } from "@/State/atoms";
 import { useRecoilValue } from "recoil";
+import Image from "next/image";
 
 const Following: React.FC = () => {
 	const { id } = useParams<{ id: string }>();
@@ -56,10 +57,12 @@ const Following: React.FC = () => {
 							key={followed._id}
 							className="flex items-center py-4 cursor-pointer hover:bg-gray-100 transition"
 							onClick={() => handleNavigateToUserProfile(followed._id)}>
-							<img
-								src={followed.profilePicture || "/default-avatar.png"}
+							<Image
+								src={followed.profilePicture}
 								alt={followed.username}
 								className="w-10 h-10 rounded-full border mr-4"
+								width={40}
+								height={40}
 							/>
 							<div>
 								<p className="font-medium">{followed.username}</p>

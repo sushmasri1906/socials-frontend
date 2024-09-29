@@ -1,4 +1,3 @@
-import Link from "next/link";
 import React from "react";
 import ALink from "./ALink";
 import { BiSolidHome } from "react-icons/bi";

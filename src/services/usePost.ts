@@ -4,15 +4,15 @@ import { authTokenState } from "@/State/atoms";
 import { useRecoilValue } from "recoil";
 
 // Define a type for the error
-type FetchPostsError = {
-	message: string;
-};
+// type FetchPostsError = {
+// 	message: string;
+// };
 
 export const usePost = () => {
 	const token = useRecoilValue(authTokenState);
 
 	// Fetch all posts for a user by user ID
-	const fetchPostsByUserId = async (_id: any) => {
+	const fetchPostsByUserId = async () => {
 		if (!token) {
 			throw new Error("No token provided");
 		}
@@ -84,27 +84,30 @@ export const usePost = () => {
 	};
 
 	// Function to create a post
-	const createPost = async (postData: {
+	const createPost = async ({
+		caption,
+		file,
+		location,
+		taggedUsers,
+	}: {
 		caption: string;
-		imageUrl: string;
+		file: File;
 		location: string;
-		taggedUsers?: string[];
+		taggedUsers: string[];
 	}) => {
 		try {
-			const response = await fetch(`${api}/posts/create`, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-					Authorization: `Bearer ${token}`,
-				},
-				body: JSON.stringify(postData),
-			});
+			const response = await axios.post(
+				`${api}/posts/create`,
+				{ caption, file, location, taggedUsers },
+				{
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${token}`,
+					},
+				}
+			);
 
-			if (!response.ok) {
-				throw new Error("Failed to create post");
-			}
-
-			return response.json();
+			return response.data;
 		} catch (error) {
 			if (error instanceof Error) {
 				throw new Error(`Failed to create post: ${error.message}`);

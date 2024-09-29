@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRecoilValue } from "recoil";
 import Image from "next/image";
-import { User, Post } from "@/types/types";
+import { Post } from "@/types/types";
 import { useRouter } from "next/navigation";
 import { authTokenState, userState } from "@/State/atoms";
 import { addLike, deleteLike } from "@/services/UserProfileServices";
@@ -23,11 +23,31 @@ function EachPost({ post }: { post: PostWithPopulatedUser }) {
 	const [closeComment, setCloseComment] = useState(false);
 	const token = useRecoilValue(authTokenState);
 	const [error, setError] = useState<string | null>(null);
-	const [userMap, setUserMap] = useState<{ [key: string]: User }>({});
 	const authToken = useRecoilValue(authTokenState);
 	const currentUser = useRecoilValue(userState);
 	const router = useRouter();
 	const [like, setLike] = useState<string[]>([]);
+
+	const getTimeDifference = (createdAt: string | Date): string => {
+		const now = new Date();
+		const postDate = new Date(createdAt);
+		const timeDifference = Math.abs(now.getTime() - postDate.getTime()); // Time difference in milliseconds
+
+		const seconds = Math.floor(timeDifference / 1000);
+		const minutes = Math.floor(seconds / 60);
+		const hours = Math.floor(minutes / 60);
+		const days = Math.floor(hours / 24);
+
+		if (days > 0) {
+			return `${days} day${days > 1 ? "s" : ""} ago`;
+		} else if (hours > 0) {
+			return `${hours} hour${hours > 1 ? "s" : ""} ago`;
+		} else if (minutes > 0) {
+			return `${minutes} minute${minutes > 1 ? "s" : ""} ago`;
+		} else {
+			return `${seconds} second${seconds > 1 ? "s" : ""} ago`;
+		}
+	};
 
 	const handleLike = async () => {
 		try {
@@ -59,7 +79,6 @@ function EachPost({ post }: { post: PostWithPopulatedUser }) {
 
 	useEffect(() => {
 		// Check if the post is liked by the current user
-		console.log("included are not ", post.likes);
 		setLike([...post.likes]);
 	}, []);
 
@@ -69,26 +88,29 @@ function EachPost({ post }: { post: PostWithPopulatedUser }) {
 		<div
 			key={post._id}
 			className="p-4 border rounded-md shadow-sm space-y-4 bg-white w-full sm:w-fit h-fit">
-			<div>
+			<div className="flex items-center gap-x-4">
 				{post.user.profilePicture && (
 					<div>
 						<Image
 							src={post.user.profilePicture}
 							alt={"profile image"}
-							width={100}
-							height={100}
-							className="h-2 w-2"
+							width={32}
+							height={32}
+							className="h-8 w-8 rounded-full"
 						/>
 					</div>
 				)}
-				<p className="text-gray-600">
+				<p className="text-black font-semibold">
 					<span className="cursor-pointer" onClick={handleNavigateToProfile}>
 						{post.user.username || "Unknown"}
 					</span>
 				</p>
+				{post.createdAt && (
+					<p className=" text-gray-500">{getTimeDifference(post.createdAt)}</p>
+				)}
 			</div>
 			{post.imageUrl && (
-				<div className="relative w-full max-h-[calc(100%-32px)] sm:w-[468px] sm:h-auto sm:max-h-[580px]">
+				<div className="relative w-full max-h-[calc(100%-32px)] sm:w-[468px] sm:h-auto sm:max-h-[580px] border border-gray-200 rounded">
 					<Image
 						src={post.imageUrl}
 						alt="Post Image"

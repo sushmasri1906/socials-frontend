@@ -1,7 +1,6 @@
 "use client";
-import { Post } from "@/types/types";
+import { Comment, Post } from "@/types/types";
 import React, { useEffect, useRef, useState } from "react";
-import { User } from "@/types/types";
 import { addComment } from "@/services/UserProfileServices";
 
 interface PostWithPopulatedUser extends Omit<Post, "user"> {
@@ -22,7 +21,7 @@ function Comments({
 	close: () => void;
 }) {
 	const [comment, setComment] = useState<string>("");
-	const [comments, setComments] = useState(post.comments);
+	const [comments, setComments] = useState<Comment[]>(post.comments);
 	const commentBoxRef = useRef<HTMLDivElement>(null); // Ref for the comment box
 
 	// Function to handle adding a comment
@@ -80,7 +79,7 @@ function Comments({
 							<div
 								key={comment._id}
 								className="flex space-x-2 mt-2 text-sm text-gray-800">
-								<strong>{userMap[comment.user]?.username || "Unknown"}:</strong>
+								<strong>{comment.username}:</strong>
 								<p>{comment.text}</p>
 							</div>
 						))
