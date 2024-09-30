@@ -73,11 +73,6 @@ const UserProfile = () => {
 		return isFollowing ? (hovering ? "Unfollow" : "Following") : "Follow";
 	};
 
-	// Navigate to another user's profile when follower/following name is clicked
-	// const handleNavigateToUserProfile = (userId: string) => {
-	// 	router.push(`/user/${userId}`);
-	// };
-
 	if (loading) {
 		return <p>Loading profile...</p>;
 	}

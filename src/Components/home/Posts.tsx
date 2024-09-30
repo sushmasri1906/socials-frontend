@@ -4,17 +4,9 @@ import { useEffect, useState } from "react";
 import { useRecoilValue } from "recoil";
 import { usePost } from "../../services/usePost";
 import { getToken } from "../../Utils/tokenUtils";
-import { Post } from "@/types/types";
 import { authTokenState } from "@/State/atoms";
 import EachPost from "./EachPost";
-
-interface PostWithPopulatedUser extends Omit<Post, "user"> {
-	user: {
-		id: string;
-		username: string;
-		profilePicture: string;
-	};
-}
+import { PostWithPopulatedUser } from "@/types/types";
 
 const Posts = () => {
 	const [posts, setPosts] = useState<PostWithPopulatedUser[]>([]);

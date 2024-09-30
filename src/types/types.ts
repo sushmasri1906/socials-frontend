@@ -32,3 +32,11 @@ export type Post = {
 	updatedAt: Date;
 	comments: Comment[];
 };
+
+export interface PostWithPopulatedUser extends Omit<Post, "user"> {
+	user: {
+		_id: string;
+		username: string;
+		profilePicture: string;
+	};
+}

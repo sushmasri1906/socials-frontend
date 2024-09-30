@@ -1,15 +1,7 @@
 "use client";
-import { Comment, Post } from "@/types/types";
 import React, { useEffect, useRef, useState } from "react";
 import { addComment } from "@/services/UserProfileServices";
-
-interface PostWithPopulatedUser extends Omit<Post, "user"> {
-	user: {
-		id: string;
-		username: string;
-		profilePicture: string;
-	};
-}
+import { PostWithPopulatedUser, Comment } from "@/types/types";
 
 function Comments({
 	post,
