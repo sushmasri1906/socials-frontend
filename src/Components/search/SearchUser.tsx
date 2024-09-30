@@ -1,7 +1,7 @@
 "use client";
 import { useState, ChangeEvent, useEffect } from "react";
-import { useRecoilState } from "recoil";
-import { authTokenState } from "../../State/atoms";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { authTokenState, userState } from "../../State/atoms";
 import axios from "axios";
 import { api } from "../../Constants/constants";
 import { useRouter } from "next/navigation";
@@ -12,6 +12,7 @@ const SearchUser = () => {
 	const [query, setQuery] = useState<string>("");
 	const [searchResults, setSearchResults] = useState<User[] | []>([]);
 	const [authToken] = useRecoilState(authTokenState);
+	const currentUser = useRecoilValue(userState);
 	const [error, setError] = useState<string | null>(null);
 	const router = useRouter();
 
@@ -43,7 +44,10 @@ const SearchUser = () => {
 	};
 
 	const handleUserClick = (userId: string) => {
-		router.push(`/user/${userId}`);
+		if (userId == currentUser._id) {
+			router.push(`/profile`);
+			return;
+		} else router.push(`/user/${userId}`);
 	};
 
 	useEffect(() => {
