@@ -3,21 +3,13 @@
 import { useEffect, useState } from "react";
 import { useRecoilValue } from "recoil";
 import Image from "next/image";
-import { Post } from "@/types/types";
 import { useRouter } from "next/navigation";
 import { authTokenState, userState } from "@/State/atoms";
 import { addLike, deleteLike } from "@/services/UserProfileServices";
 import { FaComments } from "react-icons/fa";
 import Comments from "./Comments";
 import { FcLike, FcLikePlaceholder } from "react-icons/fc";
-
-interface PostWithPopulatedUser extends Omit<Post, "user"> {
-	user: {
-		id: string;
-		username: string;
-		profilePicture: string;
-	};
-}
+import { PostWithPopulatedUser } from "@/types/types";
 
 function EachPost({ post }: { post: PostWithPopulatedUser }) {
 	const [closeComment, setCloseComment] = useState(false);
@@ -74,7 +66,7 @@ function EachPost({ post }: { post: PostWithPopulatedUser }) {
 	};
 
 	const handleNavigateToProfile = () => {
-		router.push(`/user/${post.user}`);
+		router.push(`/user/${post.user._id}`);
 	};
 
 	useEffect(() => {
