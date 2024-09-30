@@ -66,7 +66,10 @@ function EachPost({ post }: { post: PostWithPopulatedUser }) {
 	};
 
 	const handleNavigateToProfile = () => {
-		router.push(`/user/${post.user._id}`);
+		if (post.user._id == currentUser._id) {
+			router.push(`/profile`);
+			return;
+		} else router.push(`/user/${post.user._id}`);
 	};
 
 	useEffect(() => {
