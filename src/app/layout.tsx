@@ -4,6 +4,7 @@ import "./globals.css";
 import Providers from "./Providers";
 import HNavBar from "@/Components/NavBar/HNavBar";
 import VNavBar from "@/Components/NavBar/VNavBar";
+import KeepAlive from "@/Components/KeepAlive";
 
 const geistSans = localFont({
 	src: "./fonts/GeistVF.woff",
@@ -32,7 +33,8 @@ export default function RootLayout({
 				className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
 				<div>
 					<Providers>
-						<div className=" flex h-screen w-screen">
+						<KeepAlive /> {/* Add KeepAlive component here */}
+						<div className="flex h-screen w-screen">
 							<div className="w-1/6 min-w-[180px] hidden sm:block">
 								<VNavBar />
 							</div>
