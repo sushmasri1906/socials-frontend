@@ -107,17 +107,17 @@ const Profile: React.FC = () => {
 					<div
 						className="text-center cursor-pointer"
 						onClick={() => setShowFollowers(true)}>
-						<span className="font-bold">{followers.length}</span>
+						<span className="font-bold">{followers?.length || 0}</span>
 						<p className="text-gray-500">Followers</p>
 					</div>
 					<div
 						className="text-center cursor-pointer"
 						onClick={() => setShowFollowing(true)}>
-						<span className="font-bold">{following.length}</span>
+						<span className="font-bold">{following?.length || 0}</span>
 						<p className="text-gray-500">Following</p>
 					</div>
 					<div className="text-center">
-						<span className="font-bold">{posts.length}</span>
+						<span className="font-bold">{posts?.length || 0}</span>
 						<p className="text-gray-500">Posts</p>
 					</div>
 				</div>
@@ -161,7 +161,7 @@ const Profile: React.FC = () => {
 					<div className="bg-white rounded-lg p-6 w-96">
 						<h2 className="text-xl font-semibold mb-4">Followers</h2>
 						<ul className="divide-y">
-							{followers.length > 0 ? (
+							{followers && followers.length > 0 ? (
 								followers.map((follower) => (
 									<li key={follower._id} className="py-2 flex items-center">
 										<Image
@@ -193,7 +193,7 @@ const Profile: React.FC = () => {
 					<div className="bg-white rounded-lg p-6 w-96">
 						<h2 className="text-xl font-semibold mb-4">Following</h2>
 						<ul className="divide-y">
-							{following.length > 0 ? (
+							{following?.length > 0 ? (
 								following.map((followed) => (
 									<li key={followed._id} className="py-2 flex items-center">
 										<Image

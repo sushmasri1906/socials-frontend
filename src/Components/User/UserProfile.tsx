@@ -118,7 +118,9 @@ const UserProfile = () => {
 					</div>
 					<div className="flex space-x-6 mt-4">
 						<div>
-							<span className="font-semibold">{profile.posts.length || 0}</span>{" "}
+							<span className="font-semibold">
+								{profile.posts?.length || 0}
+							</span>{" "}
 							posts
 						</div>
 						<div
@@ -162,7 +164,7 @@ const UserProfile = () => {
 						<h2 className="text-xl font-semibold mb-4">Following</h2>
 						<ul className="divide-y">
 							{JSON.stringify(following) + "this is following"}
-							{following.length > 0 ? (
+							{following?.length > 0 ? (
 								following.map((user) => (
 									<li key={user._id} className="py-2 flex items-center">
 										<Image
