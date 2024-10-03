@@ -29,7 +29,7 @@ function Comments({
 				setComments([
 					...comments,
 					{
-						_id: response.comment._id, // assuming response contains comment data
+						_id: response.comment._id,
 						user: response.comment.user,
 						username: response.username,
 						text: comment,

@@ -1,15 +1,11 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import {
-	deleteProfile,
-	fetchProfile,
-	// updateProfile,
-} from "@/services/profileServices";
+import { deleteProfile, fetchProfile } from "@/services/profileServices";
 import { useRecoilValue } from "recoil";
 import { authTokenState, userState } from "@/State/atoms";
 import { User } from "@/types/types";
 import Image from "next/image";
-// import { useProfile } from "@/services/useProfile";
+
 import { api } from "@/Constants/constants";
 import { useRouter } from "next/navigation";
 
@@ -31,9 +27,8 @@ const EditProfile: React.FC = () => {
 	const user = useRecoilValue(userState);
 	const [error, setError] = useState<string | null>(null);
 	const [profileImg, setProfileImg] = useState<File | null>(null);
-	const [imgPreview, setImgPreview] = useState<string | null>(null); // State for image preview URL
+	const [imgPreview, setImgPreview] = useState<string | null>(null);
 	const router = useRouter();
-	// const { updateProfileImg } = useProfile();
 
 	const handleDelete = async () => {
 		if (profile && token) {
@@ -51,7 +46,6 @@ const EditProfile: React.FC = () => {
 			const file = e.target.files[0];
 			setProfileImg(file);
 
-			// Generate a URL for the selected file to use as image preview
 			const previewUrl = URL.createObjectURL(file);
 			setImgPreview(previewUrl);
 		}
@@ -79,41 +73,24 @@ const EditProfile: React.FC = () => {
 		loadProfile();
 	}, [token, user._id]);
 
-	// const handleUpdate = async () => {
-	// 	if (profile && token) {
-	// 		try {
-	// 			const updatedData = { username, bio };
-	// 			const updatedProfile = await updateProfile(
-	// 				profile._id,
-	// 				updatedData,
-	// 				token
-	// 			);
-	// 			setProfile(updatedProfile);
-	// 		} catch (error) {
-	// 			console.error("Error updating profile:", error);
-	// 		}
-	// 	}
-	// };
-
 	const handleProfileImage = async () => {
 		if (!profileImg) return;
 
 		// Create a FormData object
 		const formData = new FormData();
-		formData.append("file", profileImg); // Add the file to the form data
+		formData.append("file", profileImg);
 
 		try {
 			const response = await fetch(`${api}/user/profilepicture`, {
 				method: "PUT",
 				headers: {
-					Authorization: `Bearer ${token}`, // Replace with your auth token
+					Authorization: `Bearer ${token}`,
 				},
-				body: formData, // Send the FormData
+				body: formData,
 			});
 
 			const result = await response.json();
 			if (response.ok) {
-				// Handle the response
 				console.log(result);
 				loadProfile();
 				setProfileImg(result.url);

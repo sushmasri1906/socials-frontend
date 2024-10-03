@@ -19,7 +19,14 @@ const Posts = () => {
 			const token = authToken || getToken();
 			if (token) {
 				const fetchedPosts = await fetchAllPosts();
-				setPosts(fetchedPosts);
+				// Sort posts by createdAt to show latest first
+				const sortedPosts = fetchedPosts.sort(
+					(
+						a: { createdAt: string | number | Date },
+						b: { createdAt: string | number | Date }
+					) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+				);
+				setPosts(sortedPosts);
 			}
 		} catch (error) {
 			setError("Failed to fetch posts: " + (error as Error).message);
