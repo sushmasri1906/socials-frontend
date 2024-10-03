@@ -6,15 +6,18 @@ import {
 } from "@/services/UserProfileServices";
 import { useRecoilValue } from "recoil";
 import { authTokenState, userState } from "@/State/atoms";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { fetchOthersProfile } from "@/services/profileServices";
 import Image from "next/image";
-// import UserPosts from "./UserPosts";
 import { User } from "@/types/types";
 import UserPosts from "./UserPosts";
+import ViewFollowers from "./ViewFollowers";
 
 const UserProfile = () => {
 	const [profile, setProfile] = useState<User | null>(null);
+	const [following, setFollowing] = useState<User[]>([]);
+	const [showFollowers, setShowFollowers] = useState<boolean>(false);
+	const [showFollowing, setShowFollowing] = useState<boolean>(false);
 	const token = useRecoilValue(authTokenState);
 	const { id } = useParams();
 	const [error, setError] = useState<string | null>(null);
@@ -22,7 +25,6 @@ const UserProfile = () => {
 	const [isFollowing, setIsFollowing] = useState<boolean>(false);
 	const [hovering, setHovering] = useState<boolean>(false);
 	const currentUser = useRecoilValue(userState);
-	const router = useRouter();
 
 	const loadProfile = async () => {
 		if (token) {
@@ -30,6 +32,7 @@ const UserProfile = () => {
 				const data = await fetchOthersProfile(id as string, token);
 				setProfile(data.user);
 				setIsFollowing(data.user.followers.includes(currentUser._id));
+				setFollowing(data.user.following);
 				setError(null);
 			} catch (error) {
 				setError("Error fetching profile: " + (error as Error).message);
@@ -120,7 +123,7 @@ const UserProfile = () => {
 						</div>
 						<div
 							className="cursor-pointer"
-							onClick={() => router.push(`/user/${id}/followers`)}>
+							onClick={() => setShowFollowers(true)}>
 							<span className="font-semibold">
 								{profile.followers?.length || 0}
 							</span>{" "}
@@ -128,7 +131,7 @@ const UserProfile = () => {
 						</div>
 						<div
 							className="cursor-pointer"
-							onClick={() => router.push(`/user/${id}/following`)}>
+							onClick={() => setShowFollowing(true)}>
 							<span className="font-semibold">
 								{profile.following?.length || 0}
 							</span>{" "}
@@ -143,6 +146,47 @@ const UserProfile = () => {
 
 			{/* Posts Section */}
 			<UserPosts token={token!} />
+
+			{/* Modal for Followers */}
+			{showFollowers && (
+				<ViewFollowers
+					userId={profile._id}
+					close={() => setShowFollowers(false)}
+				/>
+			)}
+
+			{/* Modal for Following */}
+			{showFollowing && (
+				<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+					<div className="bg-white rounded-lg p-6 w-96">
+						<h2 className="text-xl font-semibold mb-4">Following</h2>
+						<ul className="divide-y">
+							{JSON.stringify(following) + "this is following"}
+							{following.length > 0 ? (
+								following.map((user) => (
+									<li key={user._id} className="py-2 flex items-center">
+										<Image
+											src={user.profilePicture}
+											alt={user.username}
+											className="w-10 h-10 rounded-full border mr-2"
+											width={40}
+											height={40}
+										/>
+										<span className="font-medium">{user.username}</span>
+									</li>
+								))
+							) : (
+								<p>Not following anyone yet.</p>
+							)}
+						</ul>
+						<button
+							className="mt-4 text-blue-500"
+							onClick={() => setShowFollowing(false)}>
+							Close
+						</button>
+					</div>
+				</div>
+			)}
 		</div>
 	);
 };
