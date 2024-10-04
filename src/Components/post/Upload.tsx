@@ -5,6 +5,7 @@ import { useRecoilValue } from "recoil";
 import { authTokenState } from "@/State/atoms";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { api } from "@/Constants/constants";
 
 const Upload = () => {
 	const [file, setFile] = useState<File | null>(null);
@@ -47,7 +48,7 @@ const Upload = () => {
 		formData.append("taggedUsers", JSON.stringify(taggedUsers));
 
 		try {
-			const response = await fetch("http://localhost:5000/ig/posts/create", {
+			const response = await fetch(`${api}/posts/create`, {
 				method: "POST",
 				headers: {
 					Authorization: `Bearer ${token}`,
